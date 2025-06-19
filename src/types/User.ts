@@ -8,4 +8,5 @@ export interface User {
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  masterPassword: string | null;
 }

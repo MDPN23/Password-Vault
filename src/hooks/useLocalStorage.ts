@@ -1,42 +1,53 @@
 import { useState, useEffect } from 'react';
 import { Password } from '../types/Password';
 import { useAuth } from './useAuth';
+import { encryptData, decryptData } from '../utils/crypto';
 
 const STORAGE_KEY = 'password-manager-data';
 
 export function useLocalStorage() {
-  const [passwords, setPasswords] = useState<Password[]>([]);
-  const { user } = useAuth();
+  const [passwords, setPasswords] = useState<Password[]>(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  });
+  const { user, masterPassword } = useAuth();
+  const [loading, setLoading] = useState(true);
 
-  // Create user-specific storage key
   const getUserStorageKey = () => {
     return user ? `${STORAGE_KEY}-${user.id}` : STORAGE_KEY;
   };
 
   useEffect(() => {
-    if (user) {
-      const stored = localStorage.getItem(getUserStorageKey());
-      if (stored) {
-        try {
-          setPasswords(JSON.parse(stored));
-        } catch (error) {
-          console.error('Error loading passwords:', error);
+    const loadData = async () => {
+      if (user && masterPassword) {
+        const stored = localStorage.getItem(getUserStorageKey());
+        if (stored) {
+          try {
+            const decrypted = await decryptData(stored, masterPassword);
+            setPasswords(JSON.parse(decrypted));
+          } catch (error) {
+            console.error('Decryption failed:', error);
+            setPasswords([]);
+          }
+        } else {
           setPasswords([]);
         }
-      } else {
-        setPasswords([]);
+        setLoading(false);
       }
-    }
-  }, [user]);
+    };
 
-  const savePasswords = (newPasswords: Password[]) => {
-    if (user) {
+    loadData();
+  }, [user, masterPassword]);
+
+  const savePasswords = async (newPasswords: Password[]) => {
+    if (user && masterPassword) {
       setPasswords(newPasswords);
-      localStorage.setItem(getUserStorageKey(), JSON.stringify(newPasswords));
+      const encrypted = await encryptData(JSON.stringify(newPasswords), masterPassword);
+      localStorage.setItem(getUserStorageKey(), encrypted);
     }
   };
 
-  const addPassword = (passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addPassword = async (passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newPassword: Password = {
       ...passwordData,
       id: crypto.randomUUID(),
@@ -44,22 +55,22 @@ export function useLocalStorage() {
       updatedAt: new Date().toISOString(),
     };
     const updatedPasswords = [...passwords, newPassword];
-    savePasswords(updatedPasswords);
+    await savePasswords(updatedPasswords);
     return newPassword;
   };
 
-  const updatePassword = (id: string, passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const updatePassword = async (id: string, passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => {
     const updatedPasswords = passwords.map(p => 
       p.id === id 
         ? { ...p, ...passwordData, updatedAt: new Date().toISOString() }
         : p
     );
-    savePasswords(updatedPasswords);
+    await savePasswords(updatedPasswords);
   };
 
-  const deletePassword = (id: string) => {
+  const deletePassword = async (id: string) => {
     const updatedPasswords = passwords.filter(p => p.id !== id);
-    savePasswords(updatedPasswords);
+    await savePasswords(updatedPasswords);
   };
 
   const getPassword = (id: string) => {
@@ -68,6 +79,7 @@ export function useLocalStorage() {
 
   return {
     passwords,
+    loading,
     addPassword,
     updatePassword,
     deletePassword,

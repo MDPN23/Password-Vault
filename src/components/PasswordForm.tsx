@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Save, ArrowLeft, RefreshCw, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { Password } from '../types/Password';
+import { PasswordFormProps } from '../types/Password';
 import { generatePassword, getPasswordStrength } from '../utils/passwordUtils';
-
-interface PasswordFormProps {
-  password?: Password;
-  onSave: (passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  onCancel: () => void;
-}
+import { useAuth } from '../hooks/useAuth'; // adjust path as needed
 
 export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) {
+  const { user, masterPassword } = useAuth();
   const [formData, setFormData] = useState({
     website: '',
     username: '',
@@ -23,7 +19,7 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
       setFormData({
         website: password.website,
         username: password.username,
-        password: password.password,
+        password: password.password, 
       });
     }
   }, [password]);
@@ -31,29 +27,38 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.website.trim()) {
-      newErrors.website = 'Website name is required';
-    }
-
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username or email is required';
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 4) {
+    if (!formData.website.trim()) newErrors.website = 'Website name is required';
+    if (!formData.username.trim()) newErrors.username = 'Username or email is required';
+    if (!formData.password.trim()) newErrors.password = 'Password is required';
+    else if (formData.password.length < 4)
       newErrors.password = 'Password must be at least 4 characters';
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      onSave(formData);
+
+    if (!validateForm()) return;
+
+    if (!user || !user.email || !masterPassword) {
+      alert('User not authenticated or master password missing. Cannot encrypt password.');
+      return;
+    }
+
+    try {
+      onSave({
+        id: password?.id ?? crypto.randomUUID(),
+        website: formData.website,
+        username: formData.username,
+        password: formData.password, // ✅ Save plain password, encryption happens later
+        createdAt: password?.createdAt ?? new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Encryption failed:', error);
+      alert('Failed to encrypt the password before saving.');
     }
   };
 
@@ -75,6 +80,7 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">
@@ -84,7 +90,6 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
               {password ? 'Update your password information' : 'Save a new password securely'}
             </p>
           </div>
-          
           <button
             onClick={onCancel}
             className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -94,7 +99,9 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Website */}
           <div>
             <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-2">
               Website Name *
@@ -117,6 +124,7 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
             )}
           </div>
 
+          {/* Username */}
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
               Username or Email *
@@ -139,6 +147,7 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
             )}
           </div>
 
+          {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -153,7 +162,6 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
                 <span>Generate</span>
               </button>
             </div>
-            
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -173,14 +181,12 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
-            
             {errors.password && (
               <div className="flex items-center space-x-2 mt-2 text-red-600">
                 <AlertCircle className="h-4 w-4" />
                 <span className="text-sm">{errors.password}</span>
               </div>
             )}
-            
             {passwordStrength && formData.password && !errors.password && (
               <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
@@ -192,20 +198,23 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      passwordStrength.score < 3 ? 'bg-red-500' :
-                      passwordStrength.score < 5 ? 'bg-yellow-500' : 'bg-green-500'
+                      passwordStrength.score < 3
+                        ? 'bg-red-500'
+                        : passwordStrength.score < 5
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
                     }`}
                     style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {/* Placeholder for AI-based password strength evaluation */}
                   AI-powered strength analysis will be integrated here using IBM Granite or similar technology
                 </p>
               </div>
             )}
           </div>
 
+          {/* Buttons */}
           <div className="flex space-x-4 pt-6">
             <button
               type="button"

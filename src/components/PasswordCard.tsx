@@ -3,6 +3,7 @@ import { Eye, EyeOff, Copy, Edit2, Trash2, Globe, User, Check } from 'lucide-rea
 import { Password } from '../types/Password';
 import { copyToClipboard, formatDate } from '../utils/passwordUtils';
 
+
 interface PasswordCardProps {
   password: Password;
   onEdit: (password: Password) => void;
@@ -92,7 +93,7 @@ export function PasswordCard({ password, onEdit, onDelete }: PasswordCardProps) 
             </div>
           </div>
           <button
-            onClick={() => handleCopy(password.password, 'password')}
+            onClick={() => handleCopy(showPassword ? password.password : password.password, 'password')}
             className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
             title="Copy password"
           >

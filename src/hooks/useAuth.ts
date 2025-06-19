@@ -23,6 +23,7 @@ export function useAuthProvider(): AuthContextType {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
+    masterPassword: null, // keep password in memory
   });
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function useAuthProvider(): AuthContextType {
     if (stored) {
       try {
         const { user } = JSON.parse(stored);
-        setAuthState({ user, isAuthenticated: true });
+        setAuthState(prev => ({ ...prev, user, isAuthenticated: true }));
       } catch (error) {
         console.error('Error loading auth state:', error);
         localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -39,10 +40,9 @@ export function useAuthProvider(): AuthContextType {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    
     const users = JSON.parse(localStorage.getItem('password-manager-users') || '[]');
     const user = users.find((u: any) => u.email === email && u.password === password);
-    
+
     if (user) {
       const authUser: User = {
         id: user.id,
@@ -50,25 +50,25 @@ export function useAuthProvider(): AuthContextType {
         name: user.name,
         createdAt: user.createdAt,
       };
-      
-      setAuthState({ user: authUser, isAuthenticated: true });
+
+      setAuthState({
+        user: authUser,
+        isAuthenticated: true,
+        masterPassword: password, // only stored in memory
+      });
+
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: authUser }));
       return true;
     }
-    
+
     return false;
   };
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Check if user already exists
     const users = JSON.parse(localStorage.getItem('password-manager-users') || '[]');
     const existingUser = users.find((u: any) => u.email === email);
-    
-    if (existingUser) {
-      return false;
-    }
-    
-    // Create new user
+    if (existingUser) return false;
+
     const newUser = {
       id: crypto.randomUUID(),
       name,
@@ -76,26 +76,29 @@ export function useAuthProvider(): AuthContextType {
       password,
       createdAt: new Date().toISOString(),
     };
-    
+
     users.push(newUser);
     localStorage.setItem('password-manager-users', JSON.stringify(users));
-    
-    // Auto-login after registration
+
     const authUser: User = {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
       createdAt: newUser.createdAt,
     };
-    
-    setAuthState({ user: authUser, isAuthenticated: true });
+
+    setAuthState({
+      user: authUser,
+      isAuthenticated: true,
+      masterPassword: password, // only stored in memory
+    });
+
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: authUser }));
-    
     return true;
   };
 
   const logout = () => {
-    setAuthState({ user: null, isAuthenticated: false });
+    setAuthState({ user: null, isAuthenticated: false, masterPassword: null });
     localStorage.removeItem(AUTH_STORAGE_KEY);
   };
 
