@@ -36,50 +36,6 @@ export function LandingPage() {
     },
   ];
 
-  const plans = [
-    {
-      name: 'Personal',
-      price: 'Free',
-      description: 'Perfect for individuals getting started',
-      features: [
-        'Store up to 50 passwords',
-        'Password generator',
-        'Basic security reports',
-        'Mobile app access',
-      ],
-      cta: 'Get Started Free',
-      popular: false,
-    },
-    {
-      name: 'Premium',
-      price: '$3/month',
-      description: 'Advanced features for power users',
-      features: [
-        'Unlimited password storage',
-        'Advanced password generator',
-        'Dark web monitoring',
-        'Priority support',
-        'Secure file storage',
-        'Emergency access',
-      ],
-      cta: 'Start Free Trial',
-      popular: true,
-    },
-    {
-      name: 'Family',
-      price: '$5/month',
-      description: 'Protect your entire family',
-      features: [
-        'Everything in Premium',
-        'Up to 6 family members',
-        'Shared family vault',
-        'Parental controls',
-        'Family security dashboard',
-      ],
-      cta: 'Protect Family',
-      popular: false,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -127,29 +83,27 @@ export function LandingPage() {
                 to="/login"
                 className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-all duration-200 font-semibold text-lg flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <span>Start Free Trial</span>
+                <span>Secure Now</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="text-gray-600 hover:text-gray-900 font-medium flex items-center space-x-2 transition-colors">
-                <span>Watch Demo</span>
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-[6px] border-l-gray-600 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent ml-0.5"></div>
-                </div>
-              </button>
             </div>
 
             <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
               <div className="flex items-center space-x-2">
                 <Check className="h-4 w-4 text-green-500" />
-                <span>14-day free trial</span>
+                <span>Free for personal use</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Check className="h-4 w-4 text-green-500" />
-                <span>No credit card required</span>
+                <span>End-to-end encryption</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Check className="h-4 w-4 text-green-500" />
-                <span>Cancel anytime</span>
+                <span>Cross-platform support</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Check className="h-4 w-4 text-green-500" />
+                <span>24/7 support</span>
               </div>
             </div>
           </div>
@@ -164,7 +118,7 @@ export function LandingPage() {
               Enterprise-Grade Security for Everyone
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built with the same security standards trusted by Fortune 500 companies, but designed for everyday users.
+              start your safe digital journey with us.
             </p>
           </div>
 
@@ -185,67 +139,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Choose Your Protection Plan
-            </h2>
-            <p className="text-xl text-gray-600">
-              Start free, upgrade when you need more features
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan, index) => (
-              <div
-                key={index}
-                className={`bg-white rounded-2xl p-8 border-2 transition-all duration-200 hover:shadow-lg ${
-                  plan.popular
-                    ? 'border-blue-500 shadow-lg relative'
-                    : 'border-gray-200 hover:border-blue-200'
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <div className="text-4xl font-bold text-gray-900 mb-2">{plan.price}</div>
-                  <p className="text-gray-600">{plan.description}</p>
-                </div>
-
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center space-x-3">
-                      <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  to="/login"
-                  className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 text-center block ${
-                    plan.popular
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -259,7 +152,7 @@ export function LandingPage() {
             to="/login"
             className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-lg inline-flex items-center space-x-2 shadow-lg"
           >
-            <span>Get Started Free</span>
+            <span>Get Started now</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
@@ -274,7 +167,7 @@ export function LandingPage() {
               <span className="text-lg font-semibold">SecureVault</span>
             </div>
             <div className="text-gray-400 text-sm">
-              © 2024 SecureVault. All rights reserved.
+              © 2024 SecureVault MDPN for Hacktiv8 Final Project.
             </div>
           </div>
         </div>
