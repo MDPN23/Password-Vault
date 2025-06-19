@@ -80,22 +80,16 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
+      <div>
+          <Link to="/" className="inline-flex items-left space-x-2 text-gray-600 hover:text-blue-600 mb-6 transition-colors p-4">
+            <ArrowLeft className="h-6 w-6" />
             <span>Back to home</span>
           </Link>
-          
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-              <Shield className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">SecureVault</h1>
-          </div>
-          
+      </div>
+      <div className="max-w-md w-full mx-auto ">
+        {/* Header */}
+        <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             {isLogin ? 'Welcome back' : 'Create your account'}
           </h2>
