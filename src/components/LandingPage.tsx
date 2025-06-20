@@ -1,13 +1,13 @@
 import React from 'react';
-import { Shield, Lock, Key, Eye, Smartphone, Cloud, ArrowRight, Check } from 'lucide-react';
+import { Shield, Lock, Key, Eye, Database, ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function LandingPage() {
   const features = [
     {
       icon: Shield,
-      title: 'Military-Grade Security',
-      description: 'Your passwords are encrypted with AES-256 encryption, the same standard used by banks and governments.',
+      title: 'High-Grade Security',
+      description: 'Your passwords are encrypted with AES-GCM 256-bit encryption, ensuring they are safe from unauthorized access.',
     },
     {
       icon: Key,
@@ -20,14 +20,9 @@ export function LandingPage() {
       description: 'Get instant alerts if any of your accounts are compromised in data breaches.',
     },
     {
-      icon: Smartphone,
-      title: 'Cross-Platform Sync',
-      description: 'Access your passwords seamlessly across all your devices with real-time synchronization.',
-    },
-    {
-      icon: Cloud,
-      title: 'Secure Cloud Backup',
-      description: 'Your encrypted vault is automatically backed up to the cloud, so you never lose your data.',
+      icon: Database,
+      title: 'Local Backup',
+      description: 'Your encrypted vault is saved on Local Storage. Be Wise with your devices.',
     },
     {
       icon: Lock,
@@ -72,7 +67,7 @@ export function LandingPage() {
           <div className="text-center">
             <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
               Your Digital Life,
-              <span className="text-blue-600 block">Perfectly Protected</span>
+              <span className="text-blue-600 block">Protection Partner</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
               Stop reusing weak passwords. SecureVault generates, stores, and autofills strong, unique passwords for every account. One master password protects them all.
@@ -146,13 +141,13 @@ export function LandingPage() {
             Ready to Secure Your Digital Life?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join millions of users who trust SecureVault to protect their most important accounts.
+            start your journey to digital security today.
           </p>
           <Link
             to="/login"
             className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-lg inline-flex items-center space-x-2 shadow-lg"
           >
-            <span>Get Started now</span>
+            <span>Get Started</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
