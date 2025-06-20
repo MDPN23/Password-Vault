@@ -1,6 +1,7 @@
 import React from 'react';
 import { Shield, Lock, Key, Eye, Database, ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Analytics } from "@vercel/analytics/next";
 
 export function LandingPage() {
   const features = [
@@ -167,6 +168,7 @@ export function LandingPage() {
           </div>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 }
