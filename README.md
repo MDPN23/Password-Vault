@@ -23,6 +23,8 @@ This project was developed as part of the IBM Code Generation Bootcamp & Hacktiv
 * **lucide-react** – Icon library
 * **AES-GCM (256-bit)** – Encryption algorithm for password storage
 * **LocalStorage** – Secure, offline-first data persistence
+* **Figma** – UI Design
+
 
 ---
 
@@ -62,7 +64,7 @@ Visit the app at `http://localhost:5173`
 
 SecureVault’s frontend and logic were accelerated using **IBM Granite** models via **Watsonx.ai**, specifically for:
 
-* ✍️ **Code Generation** – Generating UI components and encryption utilities with AI prompting.
+* ✍️ **Code Generation** – Generating encryption utilities with AI prompting.
 * 🛠️ **Code Fixing** – Rapidly identifying and fixing logic issues during prototyping.
 * 📚 **Best Practice Suggestions** – Improving architecture and component structure through AI-enhanced recommendations.
 
