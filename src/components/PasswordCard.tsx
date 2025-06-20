@@ -87,7 +87,7 @@ export function PasswordCard({ password, onEdit, onDelete }: PasswordCardProps) 
             </div>
             <div className="flex-1">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Password</p>
-              <p className="text-sm font-medium text-gray-900 font-mono">
+              <p className="text-sm font-medium text-gray-900 font-mono break-all turncate overflow-hidden">
                 {showPassword ? password.password : '••••••••••••'}
               </p>
             </div>

@@ -5,7 +5,6 @@ import { PasswordForm } from './PasswordForm';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../hooks/useAuth';
 import { Password } from '../types/Password';
-import { encryptData } from '../utils/crypto'; // adjust path as needed
 
 type View = 'list' | 'add' | 'edit';
 
@@ -13,8 +12,8 @@ export function Dashboard() {
   const [currentView, setCurrentView] = useState<View>('list');
   const [editingPassword, setEditingPassword] = useState<Password | undefined>();
 
-  const { user, masterPassword } = useAuth();
   const { passwords, addPassword, updatePassword, deletePassword } = useLocalStorage();
+  const { user } = useAuth();
 
   // Optional: Debug logging
   useEffect(() => {
@@ -35,16 +34,10 @@ export function Dashboard() {
   };
 
   const handleSavePassword = async (passwordData: Omit<Password, 'id' | 'createdAt' | 'updatedAt'>) => {
-    // Encrypt the password before saving
-    if (!masterPassword) {
-      throw new Error('Master password is missing.');
-    }
-    const encryptedPassword = await encryptData(passwordData.password, masterPassword);
-
     if (editingPassword) {
-      updatePassword(editingPassword.id, { ...passwordData, password: encryptedPassword });
+      updatePassword(editingPassword.id, passwordData);
     } else {
-      addPassword({ ...passwordData, password: encryptedPassword });
+      addPassword(passwordData);
     }
     setEditingPassword(undefined);
     setCurrentView('list');

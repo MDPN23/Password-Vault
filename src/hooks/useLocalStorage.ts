@@ -70,7 +70,12 @@ export function useLocalStorage() {
 
   const deletePassword = async (id: string) => {
     const updatedPasswords = passwords.filter(p => p.id !== id);
-    await savePasswords(updatedPasswords);
+    if (updatedPasswords.length === 0) {
+      localStorage.removeItem(getUserStorageKey());
+      setPasswords([]);
+    } else {
+      await savePasswords(updatedPasswords);
+    }
   };
 
   const getPassword = (id: string) => {

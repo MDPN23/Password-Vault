@@ -47,19 +47,14 @@ export function PasswordForm({ password, onSave, onCancel }: PasswordFormProps) 
       return;
     }
 
-    try {
       onSave({
         id: password?.id ?? crypto.randomUUID(),
         website: formData.website,
         username: formData.username,
-        password: formData.password, // ✅ Save plain password, encryption happens later
+        password: formData.password, // plain password, not encrypted
         createdAt: password?.createdAt ?? new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
-    } catch (error) {
-      console.error('Encryption failed:', error);
-      alert('Failed to encrypt the password before saving.');
-    }
   };
 
   const handleInputChange = (field: string, value: string) => {
